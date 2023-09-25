@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.10;
+pragma solidity ^0.8.10;
 
 // Using ERC721 standard
 // Functionality we can use
@@ -20,7 +20,7 @@ contract PokemonMarket is ERC721URIStorage {
 
     // fee to list an nft on the marketplace
     // charge a listing fee.
-    uint256 listingPrice = 0.025 ether;
+    uint256 listingPrice = 0.025 ether; //use USD through coinmarketapi
 
     // declaring the owner of the contract
     // owner earns a commision on every item sold
@@ -29,7 +29,7 @@ contract PokemonMarket is ERC721URIStorage {
     // keeping up with all the items that have been created
     // pass in the integer which is the item id and it returns a market item.
     // to fetch a market item, we only need the item id
-    mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(uint256 => MarketItem) private idToMarketItem; // what is uint256
 
     struct MarketItem {
         uint256 tokenId;
@@ -60,11 +60,12 @@ contract PokemonMarket is ERC721URIStorage {
 
     //////================================================================
 
-    /* Updates the listing price of the contract */
+    /* Updates the listing price of the contract */   // listing fee
     function updateListingPrice(uint _listingPrice) public payable {
+        //custom func
         require(
-            owner == msg.sender,
-            "Only marketplace owner can update listing price."
+            owner == msg.sender,   
+            "Only marketplace owner can update listing price." // error message 
         );
         listingPrice = _listingPrice;
     }
@@ -72,7 +73,7 @@ contract PokemonMarket is ERC721URIStorage {
     /* Returns the listing price of the contract */
     // when we deploy the contract, on the frontend we don't know how much to list it for
     // so we call the contract and get the listing price and make sure we're sending the right amount of payment
-    function getListingPrice() public view returns (uint256) {
+    function getListingPrice() public view returns (uint256) { // gettter function 
         return listingPrice;
     }
 
@@ -80,10 +81,10 @@ contract PokemonMarket is ERC721URIStorage {
     function createToken(
         string memory tokenURI,
         uint256 price
-    ) public payable returns (uint) {
-        _tokenIds.increment();
+    ) public payable returns (uint) {   // return(uint256)
+        _tokenIds.increment();   //uint newTokenId= _tokenIds.increment();
         // create a variable that get's the current value of the tokenIds (0, 1, 2...)
-        uint256 newTokenId = _tokenIds.current();
+        uint256 newTokenId = _tokenIds.current(); 
         // mint the token with
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI); //
@@ -95,10 +96,10 @@ contract PokemonMarket is ERC721URIStorage {
 
     function createMarketItem(uint256 tokenId, uint256 price) private {
         // require a certain CONDITION, in this case price greater than 0
-        require(price > 0, "Price must be at least 1 wei");
+        require(price > 0, "Price must be at least 1 wei");   
         // require that the users sending in the transaction is sending in the correct amount
         require(
-            msg.value == listingPrice,
+            msg.value == listingPrice,   // error reverting to the actual listingprice 
             "Price must be equal to listing price"
         );
 
