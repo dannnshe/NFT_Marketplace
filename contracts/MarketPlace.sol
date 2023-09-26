@@ -9,10 +9,20 @@ pragma solidity ^0.8.7;
 
 
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 // errors
 
+
 // Contract
+
+contract NFT_Marketplace is ERC721{
+
+
+
+
+
+
 
 //using statements from library 
 
@@ -38,11 +48,33 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 // public
 
+function createListing public (){
+
+}
+
+function updatePrice public (){
+
+}
+
+function withdrawListing public () {
+
+}
+
+function purchaseListing() public {
+
+}
+
+
+
+
+// internal
+
 // internal
 
 // private
 
 //Getter Function
 
+function 
 
-
+}
