@@ -48,15 +48,17 @@ contract NFT_Marketplace is ERC721{
 
 // public
 
-function createListing public (){
+function createListing() public{
 
 }
 
-function updatePrice public (){
+function updatePrice() public{
+
+    return owner; 
 
 }
 
-function withdrawListing public () {
+function withdrawListing() public  {
 
 }
 
@@ -75,6 +77,6 @@ function purchaseListing() public {
 
 //Getter Function
 
-function 
+
 
 }
