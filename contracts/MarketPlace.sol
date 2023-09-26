@@ -1,80 +1,68 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-/**@author Abbas and Dan 
-* @title Simple NFT Marketplace
-*/
+/**@author Abbas and Dan
+ * @title Simple NFT Marketplace
+ */
 
 //Imports Interfaces, Libraries, Contracts
 
-
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 // errors
 
-
 // Contract
 
-contract NFT_Marketplace is ERC721{
+contract NFT_Marketplace is ERC721, Ownable {
+    //using statements from library
 
+    //State Variables, type declarations
 
+    address payable private _contractOwner;
 
+    //Events
 
+    //modifiers
 
+    // constructor
 
+    constructor() ERC721("Market Place", "MKT") {
+        _contractOwner = payable(msg.sender);
+    }
 
-//using statements from library 
+    // receive function (if exists)
 
-//State Variables, type declarations 
+    // fallback function (if exists)
 
-//Events
+    // external
 
-//modifiers 
+    // External view
 
+    // External pure
 
+    // public
 
-// constructor
+    function createListing() public {
+        
+    }
 
-// receive function (if exists)
+    function updatePrice() public {}
 
-// fallback function (if exists)
+    function withdrawListing() public {}
 
-// external
+    function purchaseListing() public {}
 
-// External view 
+    // internal
 
-// External pure
+    // internal
 
-// public
+    // private
 
-function createListing public (){
+    //Getter Function
 
-}
+    function listingFee() public {}
 
-function updatePrice public (){
-
-}
-
-function withdrawListing public () {
-
-}
-
-function purchaseListing() public {
-
-}
-
-
-
-
-// internal
-
-// internal
-
-// private
-
-//Getter Function
-
-function 
 
 }
