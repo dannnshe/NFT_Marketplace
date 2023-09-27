@@ -9,6 +9,7 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 // errors
@@ -18,21 +19,27 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract NFT_Marketplace is ERC721, Ownable {
     //using statements from library
 
+    using Counters for Counters.Counter;
+
     //State Variables, type declarations
 
-    using Counters for Counters.Counter;
-    Counters.Counter private _listingIds;
+    Counters.Counter private _tokenID;
 
-    address payable private _contractOwner;
+    // keeping up with all the items that have been created
+    // pass in the integer which is the item id and it returns a market item.
+    // to fetch a market item, we only need the item id
+    mapping(uint256 => listedItem) public idToListedItems;
 
-    struct Listing {
-        uint256 listingIds;
+    uint256 public listingFee = 10; // use coinmarketcap to convert eth to usd
+
+    struct listedItem {
+        uint256 tokenID;
         address seller;
-        uint256 tokenId;
+        address owner;
         uint256 price;
+        bool sold;
+        bool onSale;
     }
-
-    mapping(uint256 => Listing) private _listings;
 
     //Events
 
@@ -40,9 +47,7 @@ contract NFT_Marketplace is ERC721, Ownable {
 
     // constructor
 
-    constructor() ERC721("Market Place", "MKT") {
-        _contractOwner = payable(msg.sender);
-    }
+    constructor() ERC721("Market Place", "MKT") {}
 
     // receive function (if exists)
 
@@ -56,23 +61,38 @@ contract NFT_Marketplace is ERC721, Ownable {
 
     // public
 
-function createListing(uint256 tokenId, uint256 price) public {
-     require(price > 0, "Price must be greater then zero");
-    _listingIds.increment();
-    uint256 listingId = _listingIds.current();
-    _listings[listingId] = Listing(listingId, msg.sender, tokenId, price);
-    _transfer(msg.sender, address(this), tokenId);
+    // Create listing buy buyers
+    function createListing(string tokenURI, uint256 price) public payable returns (uint256) {
+        require(price > 0, "Price must be at at lease 1 wei");
+        require(msg.value == listingFee, "Price must be equal to listing fee");
+        require(string(tokenURI).length > 0, "Token URI must not be empty");
+        uint256 tokenId = _tokenID.increment();
+        _mint(msg.sender, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        listOnMarketplace(_tokenID, price);
 
-} 
+        return tokenId;
+    }
 
-function updatePrice(uint256 listingId, uint256 newPrice) public {
-   require(_listings[listingId].seller == msg.sender, "Only the seller can update the price");
-        _listings[listingId].price = newPrice;
-}
+    function listOnMarketplace(uint256 tokenId, uint256 price) private {
+        idToListedItems[tokenId] = listedItem(
+            tokenId,
+            payable(msg.sender),
+            payable(address(this)),
+            price,
+            false
+        );
+    }
 
-function withdrawListing() public {
+    function updatePrice(uint256 tokenId, uint256 newPrice) public {
+        require(
+            idToListedItems[tokenId].seller == msg.sender,
+            "Only the seller can update the price"
+        );
+        idToListedItems[tokenId].price = newPrice;
+    }
 
-}
+    function withdrawListing() public {}
 
     function purchaseListing() public {}
 
@@ -84,6 +104,6 @@ function withdrawListing() public {
 
     //Getter Function
 
-
-
+ 
 }
+
