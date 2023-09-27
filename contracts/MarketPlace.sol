@@ -20,7 +20,19 @@ contract NFT_Marketplace is ERC721, Ownable {
 
     //State Variables, type declarations
 
+    using Counters for Counters.Counter;
+    Counters.Counter private _listingIds;
+
     address payable private _contractOwner;
+
+    struct Listing {
+        uint256 listingIds;
+        address seller;
+        uint256 tokenId;
+        uint256 price;
+    }
+
+    mapping(uint256 => Listing) private _listings;
 
     //Events
 
@@ -44,15 +56,21 @@ contract NFT_Marketplace is ERC721, Ownable {
 
     // public
 
-function createListing public (){
+function createListing(uint256 tokenId, uint256 price) public {
+     require(price > 0, "Price must be greater then zero");
+    _listingIds.increment();
+    uint256 listingId = _listingIds.current();
+    _listings[listingId] = Listing(listingId, msg.sender, tokenId, price);
+    _transfer(msg.sender, address(this), tokenId);
 
+} 
+
+function updatePrice(uint256 listingId, uint256 newPrice) public {
+   require(_listings[listingId].seller == msg.sender, "Only the seller can update the price");
+        _listings[listingId].price = newPrice;
 }
 
-function updatePrice public (){
-
-}
-
-function withdrawListing public () {
+function withdrawListing() public {
 
 }
 
@@ -66,6 +84,6 @@ function withdrawListing public () {
 
     //Getter Function
 
-function 
+
 
 }
